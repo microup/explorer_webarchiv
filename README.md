@@ -1,11 +1,11 @@
 # explorer_webarchiv
-Download archived web data from a specified time period on the web.archive.org
+*Download web(text) data from a specified time period on the web.archive.org*
 
 This project enables you to download locally saved web data from the website: https://web.archive.org, with the option to select the specific period during which the data was archived.
 
 --------------------------
 
-When using the downloader, you can specify the following arguments for running it:
+**When using the downloader, you can specify the following arguments for running it:**
 
 ```bash
 downloader --domain=YOUR_SITE --timestamp=YOUR_DATE --workers=COUNT_WORKERS
@@ -17,7 +17,7 @@ where the parameters are:
 * timeStamp - specify timestamp in the format:'yyyymmdd' (also: 'yyyy' > download only a specific year; 'yyyymm' > year and month; '2' or '1' > everything for the years past 20** or 19**
 * workers - specify the max workers (default=10)
 
-If you need to build the binary, use the following command:
+**If you need to build the binary, use the following command:**
 
 ```bash
 make build

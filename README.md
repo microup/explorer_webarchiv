@@ -5,12 +5,6 @@ This project enables you to download locally saved web data from the website: ht
 
 --------------------------
 
-If you need to build the binary, use the following command:
-
-```bash
-make build
-```
-
 When using the downloader, you can specify the following arguments for running it:
 
 ```bash
@@ -22,6 +16,12 @@ where the parameters are:
 * domain - specify the target domain (only lowercase)
 * timeStamp - specify timestamp in the format:'yyyymmdd' (also: 'yyyy' > download only a specific year; 'yyyymm' > year and month; '2' or '1' > everything for the years past 20** or 19**
 * workers - specify the max workers (default=10)
+
+If you need to build the binary, use the following command:
+
+```bash
+make build
+```
 
 ----
 

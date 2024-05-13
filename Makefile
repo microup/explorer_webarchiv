@@ -19,10 +19,10 @@ race:
 
 build-downloader:
 	@echo "downloader..."
-	go build -o build/downloader cmd/downloader/main.go
+	go build -o build/explorer_webarchiv cmd/explorer_webarchiv/main.go
 
 build: build-downloader
 
 run:
-	go run cmd/downloader/main.go --domain=YOUR_SITE --timestamp=2024
+	go run cmd/explorer_webarchiv/main.go --domain=YOUR_SITE --timestamp=2024
 

@@ -48,7 +48,7 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          go build -o build/ cmd/explorer_webarchiv/main.go
+          go build -o build/ cmd/explorer_webarchiv/explorer_webarchiv.go
 
       - name: Copy assets
         run: |

@@ -1,5 +1,5 @@
 # Explorer web.archiv.org
-*Download only TEXT data from a specified time period on the web.archive.org*
+*The utility allows you to download all textual information for the specified period for the selected URL from web.archive.org.*
 
 --------------------------
 

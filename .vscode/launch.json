@@ -9,7 +9,7 @@
             "program": "${workspaceRoot}/cmd/downloader/main.go",
             "args": [
                 // "--domain=microup.ru",
-                "--domain=dbeaver.io",
+                "--domain=YOUR_SITE",
                 "--timestamp=202404",
                 "--workers=2",
             ],

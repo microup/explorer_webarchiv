@@ -1,7 +1,7 @@
 # explorer_webarchiv
-*Download web(text) data from a specified time period on the web.archive.org*
+*Download only TEXT data from a specified time period on the web.archive.org*
 
-This project enables you to download locally saved web data from the website: https://web.archive.org, with the option to select the specific period during which the data was archived.
+This project enables you to download locally saved only TEXT data from the website: https://web.archive.org, with the option to select the specific period during which the data was archived.
 
 --------------------------
 

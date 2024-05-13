@@ -48,7 +48,7 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          go build -o build/ cmd/explorer_webarchiv/explorer_webarchiv.go
+          go build -o / cmd/explorer_webarchiv/explorer_webarchiv.go
 
       - name: Create package
         id: package

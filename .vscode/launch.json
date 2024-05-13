@@ -6,7 +6,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceRoot}/cmd/explorer_webarchiv/main.go",
+            "program": "${workspaceRoot}/cmd/explorer_webarchiv/explorer_webarchiv.go",
             "args": [
                 "--domain=YOUR_SITE",
                 "--timestamp=202404",

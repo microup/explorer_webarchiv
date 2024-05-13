@@ -1,4 +1,4 @@
-# explorer_webarchiv
+# Explorer web.archiv.org
 *Download only TEXT data from a specified time period on the web.archive.org*
 
 --------------------------

@@ -6,7 +6,7 @@
 **When using the downloader, you can specify the following arguments for running it:**
 
 ```bash
-downloader --domain=YOUR_SITE --timestamp=YOUR_DATE --workers=COUNT_WORKERS
+explorer_webarchiv --domain=YOUR_SITE --timestamp=YOUR_DATE --workers=COUNT_WORKERS
 ```
 
 where the parameters are:

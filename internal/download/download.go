@@ -4,12 +4,15 @@ import (
 	"context"
 	"log"
 	"os"
+	"regexp"
+	"strings"
 	"sync"
 
 	"path/filepath"
 
-	"explorer_webarchiv/internal/engine"
 	"explorer_webarchiv/internal/utils"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 type Task struct {
@@ -42,11 +45,28 @@ func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, root
 			return
 		}
 
-		content, err := engine.GetPage(ctx, inputURL)
+		doc, err := goquery.NewDocument(inputURL)
 		if err != nil {
 			log.Printf("error encountered: %s while retrieving content from URL: %s", err, inputURL)
 			return
 		}
+
+		result := strings.Builder{}
+
+		doc.Find("body").Each(func(i int, s *goquery.Selection) {
+			s.Contents().Each(func(j int, c *goquery.Selection) {
+				if c.Is("script, style") {
+					return
+				}
+
+				if content := strings.TrimSpace(c.Text()); content != "" {
+					re := regexp.MustCompile(`(\s{2,}|\n{3,})`)
+					cleanedText := re.ReplaceAllString(content, "\n\n")
+
+					result.WriteString(cleanedText)
+				}
+			})
+		})
 
 		file, err := os.Create(pathToFile)
 		if err != nil {
@@ -54,7 +74,7 @@ func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, root
 			return
 		}
 
-		file.WriteString(content)
+		file.WriteString(result.String())
 		file.Close()
 
 		log.Printf("done: %s", pathToFile)

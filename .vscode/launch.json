@@ -8,8 +8,9 @@
             "mode": "auto",
             "program": "${workspaceRoot}/cmd/downloader/main.go",
             "args": [
-                "--domain=microup.ru",
-                "--timeStamp=2022",
+                // "--domain=microup.ru",
+                "--domain=dbeaver.io",
+                "--timestamp=202404",
                 "--workers=2",
             ],
             "cwd": "${workspaceFolder}/build"

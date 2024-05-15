@@ -1,19 +1,20 @@
-package download
+package task
 
 import (
 	"context"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
-
-	"path/filepath"
 
 	"explorer_webarchiv/internal/utils"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+const BASE_URL = "http://web.archive.org/web/"
 
 type Task struct {
 	sem chan struct{}
@@ -25,7 +26,7 @@ func New(maxWorkers int) *Task {
 	}
 }
 
-func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, rootDir string, inputURL string) {
+func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, rootDir string, inputURL string, fileName string) {
 	t.sem <- struct{}{}
 	defer func() { <-t.sem }()
 
@@ -38,14 +39,13 @@ func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, root
 		log.Printf("worker: %d, downloading: %s", numWorker+1, inputURL)
 
 		fileName := utils.UrlToFileName(inputURL) + ".txt"
-
-		pathToFile := filepath.Join(rootDir, fileName)
-		if utils.PathExists(pathToFile) != false {
+		pathFileName := filepath.Join(rootDir, fileName)
+		if utils.PathExists(pathFileName) != false {
 			log.Printf("skipping: %s", inputURL)
 			return
 		}
 
-		doc, err := goquery.NewDocument(inputURL)
+		doc, err := goquery.NewDocument(BASE_URL + inputURL)
 		if err != nil {
 			log.Printf("error encountered: %s while retrieving content from URL: %s", err, inputURL)
 			return
@@ -68,7 +68,7 @@ func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, root
 			})
 		})
 
-		file, err := os.Create(pathToFile)
+		file, err := os.Create(pathFileName)
 		if err != nil {
 			log.Printf("error creating file: %s", err)
 			return
@@ -77,6 +77,6 @@ func (t *Task) Run(ctx context.Context, wg *sync.WaitGroup, numWorker uint, root
 		file.WriteString(result.String())
 		file.Close()
 
-		log.Printf("done: %s", pathToFile)
+		log.Printf("done: %s", pathFileName)
 	}
 }

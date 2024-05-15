@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+
+	"explorer_webarchiv/internal/types"
 )
 
 func PathExists(path string) bool {
@@ -16,7 +18,7 @@ func PathExists(path string) bool {
 }
 
 func CreateDir(pathDir string) error {
-	err := os.Mkdir(pathDir, 0777)
+	err := os.Mkdir(pathDir, types.FullPerm)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}

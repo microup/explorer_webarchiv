@@ -5,6 +5,8 @@ import (
 	"flag"
 	"log"
 
+	"explorer_webarchiv/internal/config"
+	"explorer_webarchiv/internal/types"
 	"explorer_webarchiv/internal/web_domain"
 )
 
@@ -27,8 +29,16 @@ func Run() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	cfg := config.New()
+	err := cfg.Init()
+	if err != nil {
+		log.Fatalf("failed to initialize configuration: %s", err.Error())
+	}
+
+	ctx = context.WithValue(ctx, types.ConfigObject, cfg)
+
 	webDomain := web_domain.New(targetDomain, timeStamp)
-	err := webDomain.Init()
+	err = webDomain.Init()
 	if err != nil {
 		log.Fatalf("%s", err)
 	}

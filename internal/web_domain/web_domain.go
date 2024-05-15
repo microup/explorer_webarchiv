@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"explorer_webarchiv/internal/download"
 	"explorer_webarchiv/internal/engine"
+	"explorer_webarchiv/internal/task"
 	"explorer_webarchiv/internal/utils"
 )
 
@@ -48,7 +48,7 @@ func (d *Domain) Init() error {
 
 func (d *Domain) Download(ctx context.Context, maxWorkers int) error {
 	log.Printf("retrieving information for %s, please wait.", d.targetDomain)
-	history, err := engine.GetHistory(ctx, d.targetDomain, d.timeStamp)
+	history, err := engine.GetWebHistory(ctx, d.targetDomain, d.timeStamp)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}
@@ -61,13 +61,13 @@ func (d *Domain) Download(ctx context.Context, maxWorkers int) error {
 		return errors.New("empty list tasks")
 	}
 
-	task := download.New(maxWorkers)
+	task := task.New(maxWorkers)
 
 	var wg sync.WaitGroup
 	wg.Add(countTasks)
 
 	for i := 0; i < countTasks; i++ {
-		go task.Run(ctx, &wg, uint(i), d.domainDir, history[i])
+		go task.Run(ctx, &wg, uint(i), d.domainDir, history[i], "")
 	}
 
 	wg.Wait()

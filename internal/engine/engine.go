@@ -1,29 +1,29 @@
 package engine
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
+	"context"
+	"errors"
+
+	"explorer_webarchiv/internal/config"
+	"explorer_webarchiv/internal/types"
+	"explorer_webarchiv/internal/utils"
 )
 
 const API_URL = "https://web.archive.org/cdx/search/cdx?url=*."
-const BASE_URL = "http://web.archive.org/web/"
 
-var blockByTypes = map[string]struct{}{
-	"image/jpeg":               {},
-	"image/png":                {},
-	"image/gif":                {},
-	"warc/revisit":             {},
-	"text/css":                 {},
-	"application/javascript":   {},
-	"image/vnd.microsoft.icon": {},
-}
+const MAX_CONNECTION_ATTEMPTS = 2
 
-func GetHistory(ctx context.Context, targetDomain string, timeStamp string) ([]string, error) {
+func GetWebHistory(ctx context.Context, targetDomain string, timeStamp string) ([]string, error) {
 	query_url := API_URL + targetDomain
+
+	cfg, ok := ctx.Value(types.ConfigObject).(*config.Config)
+	if !ok {
+		return nil, fmt.Errorf("'%s' not found in context", types.ConfigObject)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", query_url, nil)
 	if err != nil {
@@ -52,7 +52,7 @@ func GetHistory(ctx context.Context, targetDomain string, timeStamp string) ([]s
 
 		data := strings.Split(line, " ")
 
-		if len(data) != 7 || data[4] != "200" || IsValueExists(data[3], blockByTypes) {
+		if len(data) != 7 || data[4] != "200" || utils.IsValueExists(data[3], cfg.Rules.BlackListHttpTypes) {
 			continue
 		}
 
@@ -62,7 +62,7 @@ func GetHistory(ctx context.Context, targetDomain string, timeStamp string) ([]s
 			timestamp := string(data[1])
 
 			if strings.HasPrefix(timestamp, timeStamp) {
-				wayback_url := BASE_URL + timestamp + "/" + url
+				wayback_url := timestamp + "/" + url
 				results = append(results, wayback_url)
 			}
 		}
@@ -71,8 +71,8 @@ func GetHistory(ctx context.Context, targetDomain string, timeStamp string) ([]s
 	return results, nil
 }
 
-func GetPage(ctx context.Context, url string) (string, error) {
-	for n := 0; n <= 2; n++ {
+func GetContent(ctx context.Context, url string) (string, error) {
+	for i := 0; i <= MAX_CONNECTION_ATTEMPTS; i++ {
 		req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 		if err != nil {
 			return "", fmt.Errorf("error creating request: %w", err)
@@ -99,12 +99,4 @@ func GetPage(ctx context.Context, url string) (string, error) {
 	}
 
 	return "", errors.New("without any response data")
-}
-
-func IsValueExists(target string, list map[string]struct{}) bool {
-	if _, ok := list[target]; ok {
-		return true
-	} else {
-		return false
-	}
 }
